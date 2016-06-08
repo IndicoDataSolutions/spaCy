@@ -19,14 +19,14 @@ cdef struct Transition:
 
     bint (*is_valid)(const StateC* state, int label) nogil
     weight_t (*get_cost)(StateClass state, const GoldParseC* gold, int label) nogil
-    int (*do)(StateC* state, int label) nogil
+    int (*do)(StateC* state, int label, float score) nogil
 
 
 ctypedef weight_t (*get_cost_func_t)(StateClass state, const GoldParseC* gold, int label) nogil
 ctypedef weight_t (*move_cost_func_t)(StateClass state, const GoldParseC* gold) nogil
 ctypedef weight_t (*label_cost_func_t)(StateClass state, const GoldParseC* gold, int label) nogil
 
-ctypedef int (*do_func_t)(StateC* state, int label) nogil
+ctypedef int (*do_func_t)(StateC* state, int label, float score) nogil
 
 
 cdef class TransitionSystem:

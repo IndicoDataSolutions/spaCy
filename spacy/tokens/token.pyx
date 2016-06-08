@@ -33,11 +33,11 @@ _STR_TRAILING_WHITESPACE = False
 def use_deprecated_Token__str__semantics(value):
     '''
     Preserve deprecated semantics for Token.__str__ and Token.__unicode__ methods.
-    
+
     spaCy < 0.100.7 had a bug in the semantics of the Token.__str__ and Token.__unicode__
     built-ins: they included a trailing space. To ease the transition to the
     new semantics, you can use this function to switch the old semantics back on.
-    
+
     Example:
 
         from spacy.tokens.token import keep_deprecated_Token.__str__semantics
@@ -129,6 +129,10 @@ cdef class Token:
     property lang:
         def __get__(self):
             return self.c.lex.lang
+
+    property ent_score:
+        def __get__(self):
+            return self.c.ent_score
 
     property idx:
         def __get__(self):
@@ -278,7 +282,7 @@ cdef class Token:
     property ancestors:
         def __get__(self):
             cdef const TokenC* head_ptr = self.c
-            # guard against infinite loop, no token can have 
+            # guard against infinite loop, no token can have
             # more ancestors than tokens in the tree
             cdef int i = 0
             while head_ptr.head != 0 and i < self.doc.length:
@@ -307,7 +311,7 @@ cdef class Token:
 
             # is the new head a descendant of the old head
             cdef bint is_desc = old_head.is_ancestor_of(new_head)
-            
+
             cdef int new_edge
             cdef Token anc, child
 
@@ -337,7 +341,7 @@ cdef class Token:
                         if anc.c.l_edge <= new_edge:
                             break
                         anc.c.l_edge = new_edge
-            
+
             elif self.c.head < 0: # right dependent
                 old_head.c.r_kids -= 1
                 # do the same thing as for l_edge
@@ -352,7 +356,7 @@ cdef class Token:
                             if child.c.r_edge > new_edge:
                                 new_edge = child.c.r_edge
                         old_head.c.r_edge = new_edge
-                    
+
                     for anc in old_head.ancestors:
                         if anc.c.r_edge >= new_edge:
                             break
@@ -484,19 +488,19 @@ cdef class Token:
     property is_punct:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_PUNCT)
 
-    property is_space: 
+    property is_space:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_SPACE)
-    
-    property is_bracket: 
+
+    property is_bracket:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_BRACKET)
 
-    property is_quote: 
+    property is_quote:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_QUOTE)
 
-    property is_left_punct: 
+    property is_left_punct:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_LEFT_PUNCT)
 
-    property is_right_punct: 
+    property is_right_punct:
         def __get__(self): return Lexeme.c_check_flag(self.c.lex, IS_RIGHT_PUNCT)
 
     property like_url:

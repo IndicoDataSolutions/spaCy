@@ -54,3 +54,4 @@ cdef struct TokenC:
 
     int ent_iob
     int ent_type
+    float ent_score

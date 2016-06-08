@@ -155,7 +155,7 @@ cdef class Missing:
         return False
 
     @staticmethod
-    cdef int transition(StateC* s, int label) nogil:
+    cdef int transition(StateC* s, int label, float score) nogil:
         pass
 
     @staticmethod
@@ -189,9 +189,9 @@ cdef class Begin:
             return label != 0 and not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.open_ent(label)
-        st.set_ent_tag(st.B(0), 3, label)
+        st.set_ent_tag(st.B(0), 3, label, score)
         st.push()
         st.pop()
 
@@ -229,10 +229,10 @@ cdef class In:
         elif st.B_(1).sent_start:
             return False
         return st.entity_is_open() and label != 0 and st.E_(0).ent_type == label
-    
+
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
-        st.set_ent_tag(st.B(0), 1, label)
+    cdef int transition(StateC* st, int label, float score) nogil:
+        st.set_ent_tag(st.B(0), 1, label, score)
         st.push()
         st.pop()
 
@@ -243,7 +243,7 @@ cdef class In:
         cdef int g_act = gold.ner[s.B(0)].move
         cdef int g_tag = gold.ner[s.B(0)].label
         cdef bint is_sunk = _entity_is_sunk(s, gold.ner)
-        
+
         if g_act == MISSING:
             return 0
         elif g_act == BEGIN:
@@ -273,9 +273,9 @@ cdef class Last:
         return st.entity_is_open() and label != 0 and st.E_(0).ent_type == label
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.close_ent()
-        st.set_ent_tag(st.B(0), 1, label)
+        st.set_ent_tag(st.B(0), 1, label, score)
         st.push()
         st.pop()
 
@@ -285,7 +285,7 @@ cdef class Last:
 
         cdef int g_act = gold.ner[s.B(0)].move
         cdef int g_tag = gold.ner[s.B(0)].label
-        
+
         if g_act == MISSING:
             return 0
         elif g_act == BEGIN:
@@ -322,10 +322,10 @@ cdef class Unit:
         return label != 0 and not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.open_ent(label)
         st.close_ent()
-        st.set_ent_tag(st.B(0), 3, label)
+        st.set_ent_tag(st.B(0), 3, label, score)
         st.push()
         st.pop()
 
@@ -358,11 +358,11 @@ cdef class Out:
         return not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
-        st.set_ent_tag(st.B(0), 2, 0)
+    cdef int transition(StateC* st, int label, float score) nogil:
+        st.set_ent_tag(st.B(0), 2, 0, score)
         st.push()
         st.pop()
-    
+
     @staticmethod
     cdef weight_t cost(StateClass s, const GoldParseC* gold, int label) nogil:
         cdef int g_act = gold.ner[s.B(0)].move
@@ -387,7 +387,7 @@ cdef class Out:
             return 1
         else:
             return 1
-    
+
 
 class OracleError(Exception):
     pass

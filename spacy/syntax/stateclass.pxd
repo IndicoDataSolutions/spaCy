@@ -48,7 +48,7 @@ cdef class StateClass:
 
     cdef inline int H(self, int i) nogil:
         return self.c.H(i)
-    
+
     cdef inline int E(self, int i) nogil:
         return self.c.E(i)
 
@@ -96,24 +96,24 @@ cdef class StateClass:
 
     cdef inline void pop(self) nogil:
         self.c.pop()
-    
+
     cdef inline void unshift(self) nogil:
         self.c.unshift()
 
     cdef inline void add_arc(self, int head, int child, int label) nogil:
         self.c.add_arc(head, child, label)
-    
+
     cdef inline void del_arc(self, int head, int child) nogil:
         self.c.del_arc(head, child)
 
     cdef inline void open_ent(self, int label) nogil:
         self.c.open_ent(label)
-    
+
     cdef inline void close_ent(self) nogil:
         self.c.close_ent()
-    
-    cdef inline void set_ent_tag(self, int i, int ent_iob, int ent_type) nogil:
-        self.c.set_ent_tag(i, ent_iob, ent_type)
+
+    cdef inline void set_ent_tag(self, int i, int ent_iob, int ent_type, float ent_score) nogil:
+        self.c.set_ent_tag(i, ent_iob, ent_type, ent_score)
 
     cdef inline void set_break(self, int i) nogil:
         self.c.set_break(i)

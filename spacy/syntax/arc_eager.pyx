@@ -118,7 +118,7 @@ cdef class Shift:
         return st.buffer_length() >= 2 and not st.shifted[st.B(0)] and not st.B_(0).sent_start
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.push()
         st.fast_forward()
 
@@ -141,7 +141,7 @@ cdef class Reduce:
         return st.stack_depth() >= 2
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         if st.has_head(st.S(0)):
             st.pop()
         else:
@@ -167,7 +167,7 @@ cdef class LeftArc:
         return not st.B_(0).sent_start
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.add_arc(st.B(0), st.S(0), label)
         st.pop()
         st.fast_forward()
@@ -200,7 +200,7 @@ cdef class RightArc:
         return not st.B_(0).sent_start
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.add_arc(st.S(0), st.B(0), label)
         st.push()
         st.fast_forward()
@@ -237,7 +237,7 @@ cdef class Break:
             return True
 
     @staticmethod
-    cdef int transition(StateC* st, int label) nogil:
+    cdef int transition(StateC* st, int label, float score) nogil:
         st.set_break(st.B_(0).l_edge)
         st.fast_forward()
 
@@ -400,7 +400,7 @@ cdef class ArcEager(TransitionSystem):
         for i in range(self.n_moves):
             output[i] = is_valid[self.c[i].move]
 
-    cdef int set_costs(self, int* is_valid, weight_t* costs, 
+    cdef int set_costs(self, int* is_valid, weight_t* costs,
                        StateClass stcls, GoldParse gold) except -1:
         cdef int i, move, label
         cdef label_cost_func_t[N_MOVES] label_cost_funcs

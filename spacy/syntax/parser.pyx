@@ -72,7 +72,7 @@ def ParserFactory(transition_system):
 
 
 cdef class ParserModel(AveragedPerceptron):
-    cdef void set_featuresC(self, ExampleC* eg, const StateC* state) nogil: 
+    cdef void set_featuresC(self, ExampleC* eg, const StateC* state) nogil:
         fill_context(eg.atoms, state)
         eg.nr_feat = self.extracter.set_features(eg.features, eg.atoms)
 
@@ -174,7 +174,6 @@ cdef class Parser:
             self.model.set_scoresC(eg.scores, eg.features, eg.nr_feat)
 
             guess = VecVec.arg_max_if_true(eg.scores, eg.is_valid, eg.nr_class)
-
             action = self.moves.c[guess]
             if not eg.is_valid[guess]:
                 # with gil:
@@ -182,7 +181,7 @@ cdef class Parser:
                 #     print 'invalid action:', move_name
                 return 1
 
-            action.do(state, action.label)
+            action.do(state, action.label, eg.scores[guess])
             memset(eg.scores, 0, sizeof(eg.scores[0]) * eg.nr_class)
             for i in range(eg.nr_class):
                 eg.is_valid[i] = 1
@@ -195,7 +194,7 @@ cdef class Parser:
         free(eg.scores)
         free(eg.is_valid)
         return 0
-  
+
     def train(self, Doc tokens, GoldParse gold):
         self.moves.preprocess_gold(gold)
         cdef StateClass stcls = StateClass.init(tokens.c, tokens.length)
@@ -215,7 +214,7 @@ cdef class Parser:
             guess = VecVec.arg_max_if_true(eg.c.scores, eg.c.is_valid, eg.c.nr_class)
 
             action = self.moves.c[eg.guess]
-            action.do(stcls.c, action.label)
+            action.do(stcls.c, action.label, eg.c.scores[eg.guess])
             loss += eg.costs[eg.guess]
             eg.fill_scores(0, eg.nr_class)
             eg.fill_costs(0, eg.nr_class)
@@ -301,7 +300,9 @@ cdef class StepwiseState:
             action = self.parser.moves.c[clas]
         else:
             action = self.parser.moves.lookup_transition(action_name)
-        action.do(self.stcls.c, action.label)
+
+        guess = VecVec.arg_max_if_true(self.eg.c.scores, self.eg.c.is_valid, self.eg.c.nr_class)
+        action.do(self.stcls.c, action.label, self.eg.c.scores[guess])
 
     def finish(self):
         if self.stcls.is_final():
