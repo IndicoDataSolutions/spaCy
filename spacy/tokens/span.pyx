@@ -72,11 +72,6 @@ cdef class Span:
             else:
                 return self.doc[self.start + i]
 
-    def _calculate_score(self):
-        for i in range(self.start, self.end):
-            self.doc[i].ent_score
-        return
-
     def __iter__(self):
         self._recalculate_indices()
         for i in range(self.start, self.end):
