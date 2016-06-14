@@ -159,9 +159,9 @@ cdef class Doc:
                     self._vector_norm += value * value
                 self._vector_norm = math.sqrt(self._vector_norm)
             return self._vector_norm
-        
+
         def __set__(self, value):
-            self._vector_norm = value 
+            self._vector_norm = value
 
     @property
     def string(self):
@@ -178,7 +178,7 @@ cdef class Doc:
     property ents:
         def __get__(self):
             """Yields named-entity Span objects.
-        
+
             Iterate over the span to get individual Token objects, or access the label:
 
             >>> from spacy.en import English
@@ -186,7 +186,7 @@ cdef class Doc:
             >>> tokens = nlp(u'Mr. Best flew to New York on Saturday morning.')
             >>> ents = list(tokens.ents)
             >>> ents[0].label, ents[0].label_, ''.join(t.orth_ for t in ents[0])
-            (112504, u'PERSON', u'Best ') 
+            (112504, u'PERSON', u'Best ')
             """
             cdef int i
             cdef const TokenC* token
@@ -339,7 +339,7 @@ cdef class Doc:
         cdef int i
         cdef attr_t attr
         cdef size_t count
-        
+
         if counts is None:
             counts = PreshCounter()
             output_dict = True
@@ -387,7 +387,7 @@ cdef class Doc:
         cdef TokenC* tokens = self.c
         cdef int length = len(array)
         cdef attr_t[:] values
-        for col, attr_id in enumerate(attrs): 
+        for col, attr_id in enumerate(attrs):
             values = array[:, col]
             if attr_id == HEAD:
                 for i in range(length):
@@ -429,7 +429,7 @@ cdef class Doc:
     def from_bytes(self, data):
         self.vocab.serializer.unpack_into(data[4:], self)
         return self
-    
+
     @staticmethod
     def read_bytes(file_):
         keep_reading = True
@@ -456,7 +456,7 @@ cdef class Doc:
             return None
         # Currently we have the token index, we want the range-end index
         end += 1
-        
+
         cdef Span span = self[start:end]
         # Get LexemeC for newly merged token
         new_orth = ''.join([t.text_with_ws for t in span])
@@ -555,7 +555,7 @@ cdef int set_children_from_heads(TokenC* tokens, int length) except -1:
             if child.l_edge < head.l_edge:
                 head.l_edge = child.l_edge
             head.l_kids += 1
-        
+
     # Set right edges --- same as above, but iterate in reverse
     for i in range(length-1, -1, -1):
         child = &tokens[i]
@@ -569,4 +569,3 @@ cdef int set_children_from_heads(TokenC* tokens, int length) except -1:
     for i in range(length):
         if tokens[i].head == 0 and tokens[i].dep != 0:
             tokens[tokens[i].l_edge].sent_start = True
-            

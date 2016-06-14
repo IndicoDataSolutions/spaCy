@@ -72,6 +72,11 @@ cdef class Span:
             else:
                 return self.doc[self.start + i]
 
+    def _calculate_score(self):
+        for i in range(self.start, self.end):
+            self.doc[i].ent_score
+        return
+
     def __iter__(self):
         self._recalculate_indices()
         for i in range(self.start, self.end):
@@ -95,7 +100,7 @@ cdef class Span:
             end = token_by_end(self.doc.c, self.doc.length, self.end_char)
             if end == -1:
                 raise IndexError("Error calculating span: Can't find end")
-            
+
             self.start = start
             self.end = end + 1
 
@@ -116,7 +121,7 @@ cdef class Span:
     property has_vector:
         def __get__(self):
             return any(token.has_vector for token in self)
-    
+
     property vector:
         def __get__(self):
             if self._vector is None:
@@ -149,14 +154,14 @@ cdef class Span:
         shortest path to the root of the sentence (or is the root itself).
 
         If multiple words are equally high in the tree, the first word is taken.
-        
+
         For example:
-        
+
         >>> toks = nlp(u'I like New York in Autumn.')
 
         Let's name the indices --- easier than writing "toks[4]" etc.
 
-        >>> i, like, new, york, in_, autumn, dot = range(len(toks)) 
+        >>> i, like, new, york, in_, autumn, dot = range(len(toks))
 
         The head of 'new' is 'York', and the head of 'York' is 'like'
 
@@ -216,7 +221,7 @@ cdef class Span:
                 return self.doc[self.start]
             else:
                 return self.doc[root]
-    
+
     property lefts:
         """Tokens that are to the left of the Span, whose head is within the Span."""
         def __get__(self):
