@@ -12,6 +12,7 @@ from cpython.exc cimport PyErr_CheckSignals
 from libc.stdint cimport uint32_t, uint64_t
 from libc.string cimport memset, memcpy
 from libc.stdlib cimport malloc, calloc, free
+from libc.math cimport exp
 import os.path
 from os import path
 import shutil
@@ -66,6 +67,39 @@ def get_templates(name):
         return (pf.unigrams + pf.s0_n0 + pf.s1_n0 + pf.s1_s0 + pf.s0_n1 + pf.n0_n1 + \
                 pf.tree_shape + pf.trigrams)
 
+cdef void minmax(float *observation, int size, int low, int high, int *is_valid, float *result) nogil:
+    """
+    Standard minmax function to scale input into min -> max range with additional is_valid array.
+    Not valid values are 0'd out and not considered for minmax.
+    We choose to use 8 to get nicer first token scores.
+    """
+    cdef float min = 0
+    cdef float max = 0
+    for i in range(0, size):
+        if not is_valid[i]:
+            continue
+        if observation[i] < min:
+            min = observation[i]
+        if observation[i] > max:
+            max = observation[i]
+
+    for i in range(0, size):
+        if not is_valid[i]:
+            result[i] = 0
+            continue
+        result[i] = (observation[i] - min)/(max - min) * (high - low) + low
+
+cdef void softmax(float *observation, int size, float *softmax_destination) nogil:
+    """
+    Standard softmax. Sum of result should be 1 and all values should be 0->1.
+    """
+    cdef int i
+    cdef float exp_sum = 0.0
+    for i in range(0, size):
+      softmax_destination[i] = exp(observation[i])
+      exp_sum += softmax_destination[i]
+    for i in range(0, size):
+        softmax_destination[i] /= exp_sum
 
 def ParserFactory(transition_system):
     return lambda strings, dir_: Parser(strings, dir_, transition_system)
@@ -158,6 +192,8 @@ cdef class Parser:
 
     cdef int parseC(self, TokenC* tokens, int length, int nr_feat, int nr_class) nogil:
         cdef ExampleC eg
+        cdef float* softmax_dst = <float*>calloc(sizeof(float), nr_class)
+        cdef float* shiftpos_dst = <float*>calloc(sizeof(float), nr_class)
         eg.nr_feat = nr_feat
         eg.nr_atom = CONTEXT_SIZE
         eg.nr_class = nr_class
@@ -180,8 +216,9 @@ cdef class Parser:
                 #     move_name = self.moves.move_name(action.move, action.label)
                 #     print 'invalid action:', move_name
                 return 1
-
-            action.do(state, action.label, eg.scores[guess])
+            minmax(eg.scores, eg.nr_class, 0, 8, eg.is_valid, shiftpos_dst)
+            softmax(shiftpos_dst, eg.nr_class, softmax_dst);
+            action.do(state, action.label, softmax_dst[guess])
             memset(eg.scores, 0, sizeof(eg.scores[0]) * eg.nr_class)
             for i in range(eg.nr_class):
                 eg.is_valid[i] = 1

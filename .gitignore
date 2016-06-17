@@ -101,3 +101,5 @@ website/demos/sense2vec/
 
 # Komodo project files
 *.komodoproject
+
+cythonize.json

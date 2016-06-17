@@ -173,7 +173,7 @@ cdef class Matcher:
 
     def __reduce__(self):
         return (self.__class__, (self.vocab, self._patterns), None, None)
-    
+
     property n_patterns:
         def __get__(self): return self.patterns.size()
 
@@ -271,7 +271,7 @@ cdef class PhraseMatcher:
         assert length < self.max_length
         tags = get_bilou(length)
         assert len(tags) == length, length
-        
+
         cdef int i
         for i in range(self.max_length):
             self._phrase_key[i] = 0
