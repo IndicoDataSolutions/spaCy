@@ -8,25 +8,6 @@ open-source software, released under the MIT license.
 
 💫 **Version 1.2 out now!** `Read the release notes here. <https://github.com/explosion/spaCy/releases/>`_
 
-.. image:: http://i.imgur.com/wFvLZyJ.png
-    :target: https://travis-ci.org/explosion/spaCy
-    :alt: spaCy on Travis CI
-    
-.. image:: https://travis-ci.org/explosion/spaCy.svg?branch=master
-    :target: https://travis-ci.org/explosion/spaCy
-    :alt: Build Status
-    
-.. image:: https://img.shields.io/github/release/explosion/spacy.svg
-    :target: https://github.com/explosion/spaCy/releases   
-    :alt: Current Release Version
-    
-.. image:: https://img.shields.io/pypi/v/spacy.svg   
-    :target: https://pypi.python.org/pypi/spacy
-    :alt: pypi Version
-
-.. image:: https://badges.gitter.im/spaCy-users.png
-    :target: https://gitter.im/explosion/spaCy
-    :alt: spaCy on Gitter
 
 📖 Documentation
 ================
