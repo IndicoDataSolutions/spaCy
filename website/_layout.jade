@@ -1,43 +1,64 @@
+//- 💫 GLOBAL LAYOUT
+
 include _includes/_mixins
-
-- var _section = current.path[0]
-- var _site = current.source
-
-- var is_article = ( (_section == 'blog' && _site != 'index') || template == 'article')
-- var has_asides = (is_article || (_section == 'docs' && asides != false) || asides)
-
-
-//-  Layout
-//- ============================================================================
 
 doctype html
 
 html(lang="en")
-    !=partial("_includes/_head", { _section: _section })
+    title
+        if SECTION == "docs" && SUBSECTION && SUBSECTION != "index"
+            | #{title} | #{SITENAME} #{SUBSECTION == "api" ? "API" : "Usage"} Documentation
 
-    body.body
-        !=partial('_includes/_nav', { _section: _section, _site: _site })
+        else if SECTION != "index"
+            | #{title} | #{SITENAME}
 
-        if landing
-            != yield
-        
         else
-            !=partial('_includes/_header', { is_article: is_article })
+            | #{SITENAME} - #{SLOGAN}
 
-            if sidebar
-                !=partial('_includes/_sidebar')
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="referrer" content="always")
+    meta(name="description" content=description)
 
-            main.main(class='#{(sidebar) ? "main--sidebar" : "" } #{(has_asides) ? "main--asides" : "" } #{(is_article) ? "main--article" : "" }')
+    meta(property="og:type" content="website")
+    meta(property="og:site_name" content=sitename)
+    meta(property="og:url" content="#{SITE_URL}/#{current.path.join('/')}")
+    meta(property="og:title" content="#{title} - spaCy")
+    meta(property="og:description" content=description)
+    meta(property="og:image" content="#{SITE_URL}/assets/img/social#{(SECTION == 'docs') ? '_docs' : ''}.jpg")
 
-                if is_article
-                    !=partial('_includes/_article', { _section: _section })
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:site" content="@" + SOCIAL.twitter)
+    meta(name="twitter:title" content="#{title} - spaCy")
+    meta(name="twitter:description" content=description)
+    meta(name="twitter:image" content="#{SITE_URL}/assets/img/social#{(SECTION == 'docs') ? '_docs' : ''}.jpg")
 
-                else
-                    !=yield
+    link(rel="shortcut icon" href="/assets/img/favicon.ico")
+    link(rel="icon" type="image/x-icon" href="/assets/img/favicon.ico")
 
-        !=partial('_includes/_footer')
+    if SUBSECTION == "usage"
+        link(href="/assets/css/style_red.css?v#{V_CSS}" rel="stylesheet")
 
-        each script in scripts
-            script(src='/assets/js/' + script + '.js', type='text/javascript')
+    else
+        link(href="/assets/css/style.css?v#{V_CSS}" rel="stylesheet")
 
-        !=partial('_includes/_analytics')
+    body
+        include _includes/_navigation
+
+        if SECTION == "docs"
+            include _includes/_page-docs
+
+        else
+            main!=yield
+                include _includes/_footer
+
+        script(src="/assets/js/main.js?v#{V_JS}", type="text/javascript")
+        script(src="/assets/js/prism.js", type="text/javascript")
+
+        if environment == "deploy"
+            script
+                | window.ga=window.ga||function(){
+                | (ga.q=ga.q||[]).push(arguments)}; ga.l=+new Date;
+                | ga('create', '#{ANALYTICS}', 'auto'); ga('send', 'pageview');
+
+            script(async src="https://www.google-analytics.com/analytics.js")

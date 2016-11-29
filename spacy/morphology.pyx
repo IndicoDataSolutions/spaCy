@@ -35,13 +35,15 @@ cdef class Morphology:
         return (Morphology, (self.strings, self.tag_map, self.lemmatizer), None, None)
 
     cdef int assign_tag(self, TokenC* token, tag) except -1:
-        cdef int tag_id
         if isinstance(tag, basestring):
             tag_id = self.reverse_index[self.strings[tag]]
         else:
-            tag_id = tag
+            tag_id = self.reverse_index[tag]
+        self.assign_tag_id(token, tag_id)
+
+    cdef int assign_tag_id(self, TokenC* token, int tag_id) except -1:
         if tag_id >= self.n_tags:
-            raise ValueError("Unknown tag: %s" % tag)
+            raise ValueError("Unknown tag ID: %s" % tag_id)
         # TODO: It's pretty arbitrary to put this logic here. I guess the justification
         # is that this is where the specific word and the tag interact. Still,
         # we should have a better way to enforce this rule, or figure out why
@@ -53,7 +55,9 @@ cdef class Morphology:
         if analysis is NULL:
             analysis = <MorphAnalysisC*>self.mem.alloc(1, sizeof(MorphAnalysisC))
             analysis.tag = self.rich_tags[tag_id]
-            analysis.lemma = self.lemmatize(analysis.tag.pos, token.lex.orth)
+            tag_str = self.strings[self.rich_tags[tag_id].name]
+            analysis.lemma = self.lemmatize(analysis.tag.pos, token.lex.orth,
+                                            **self.tag_map.get(tag_str, {}))
             self._cache.set(tag_id, token.lex.orth, analysis)
         token.lemma = analysis.lemma
         token.pos = analysis.tag.pos
@@ -89,18 +93,19 @@ cdef class Morphology:
                     else:
                         self.assign_feature(&cached.tag.morph, name_str, value_str)
                 if cached.lemma == 0:
-                    cached.lemma = self.lemmatize(rich_tag.pos, orth)
+                    cached.lemma = self.lemmatize(rich_tag.pos, orth,
+                                                  self.tag_map.get(tag_str, {}))
                 self._cache.set(tag_id, orth, <void*>cached)
 
-    def lemmatize(self, const univ_pos_t pos, attr_t orth):
+    def lemmatize(self, const univ_pos_t univ_pos, attr_t orth, **morphology):
         cdef unicode py_string = self.strings[orth]
         if self.lemmatizer is None:
             return self.strings[py_string.lower()]
-        if pos != NOUN and pos != VERB and pos != ADJ and pos != PUNCT:
+        if univ_pos not in (NOUN, VERB, ADJ, PUNCT):
             return self.strings[py_string.lower()]
         cdef set lemma_strings
         cdef unicode lemma_string
-        lemma_strings = self.lemmatizer(py_string, pos)
+        lemma_strings = self.lemmatizer(py_string, univ_pos, **morphology)
         lemma_string = sorted(lemma_strings)[0]
         lemma = self.strings[lemma_string]
         return lemma

@@ -1,0 +1,44 @@
+//- 💫 CSS > COMPONENTS > SIDEBAR
+
+//- Sidebar container
+
+.c-sidebar
+    background: $color-subtle-light
+    overflow-y: auto
+
+    @include breakpoint(min, md)
+        @include position(fixed, top, left, 0, 0)
+        @include size($sidebar-width, 100vh)
+        flex: 0 0 $sidebar-width
+        padding: calc(#{$nav-height} + 1.5rem) 0 2rem
+        z-index: 10
+        border-right: 1px solid $color-subtle
+
+    @include breakpoint(max, sm)
+        flex: 100%
+        width: 100%
+        margin-top: $nav-height
+        display: flex
+        flex-flow: row wrap
+        width: 100%
+
+
+//- Sidebar section
+
+.c-sidebar__section
+    & > *
+        padding: 0 2rem
+
+    @include breakpoint(max, sm)
+        flex: 1 1 0
+        padding: 1.25rem 0
+        border-bottom: 1px solid $color-subtle
+        margin: 0
+
+        &:not(:last-child)
+            border-right: 1px solid $color-subtle
+
+    .is-active
+        font-weight: bold
+        color: $color-theme
+        background: rgba($color-subtle, 0.4)
