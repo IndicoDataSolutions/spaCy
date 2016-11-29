@@ -320,7 +320,6 @@ cdef class Doc:
             assert ents[0].text == 'Mr. Best'
         '''
         def __get__(self):
-<<<<<<< HEAD
             """Yields named-entity Span objects.
 
             Iterate over the span to get individual Token objects, or access the label:
@@ -332,8 +331,6 @@ cdef class Doc:
             >>> ents[0].label, ents[0].label_, ''.join(t.orth_ for t in ents[0])
             (112504, u'PERSON', u'Best ')
             """
-=======
->>>>>>> upstream/master
             cdef int i
             cdef const TokenC* token
             cdef int start = -1
@@ -695,10 +692,7 @@ cdef class Doc:
             return None
         # Currently we have the token index, we want the range-end index
         end += 1
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
         cdef Span span = self[start:end]
         tag = self.vocab.strings[attributes.get(TAG, span.root.tag)]
         lemma = self.vocab.strings[attributes.get(LEMMA, span.root.lemma)]

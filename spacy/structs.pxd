@@ -54,10 +54,6 @@ cdef struct TokenC:
     uint32_t r_edge
 
     int ent_iob
-<<<<<<< HEAD
-    int ent_type
     float ent_score
-=======
     int ent_type # TODO: Is there a better way to do this? Multiple sources of truth..
     hash_t ent_id
->>>>>>> upstream/master

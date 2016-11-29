@@ -268,10 +268,7 @@ cdef class Parser:
         free(eg.scores)
         free(eg.is_valid)
         return 0
-<<<<<<< HEAD
 
-    def train(self, Doc tokens, GoldParse gold):
-=======
   
     def update(self, Doc tokens, GoldParse gold):
         """Update the statistical model.
@@ -284,7 +281,6 @@ cdef class Parser:
         Returns (float):
             The loss on this example.
         """
->>>>>>> upstream/master
         self.moves.preprocess_gold(gold)
         cdef StateClass stcls = StateClass.init(tokens.c, tokens.length)
         self.moves.initialize_state(stcls.c)
