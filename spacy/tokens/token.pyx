@@ -29,7 +29,6 @@ from ..attrs cimport IS_OOV
 from ..lexeme cimport Lexeme
 
 
-<<<<<<< HEAD
 _STR_TRAILING_WHITESPACE = False
 
 def use_deprecated_Token__str__semantics(value):
@@ -51,8 +50,6 @@ def use_deprecated_Token__str__semantics(value):
     _STR_TRAILING_WHITESPACE = value
 
 
-=======
->>>>>>> upstream/master
 cdef class Token:
     """An individual token --- i.e. a word, punctuation symbol, whitespace, etc.
     """
