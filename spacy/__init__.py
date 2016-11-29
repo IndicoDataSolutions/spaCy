@@ -1,27 +1,47 @@
-from .util import set_lang_class, get_lang_class, get_package, get_package_by_name
+import pathlib
+
+from .util import set_lang_class, get_lang_class
+from .about import __version__
 
 from . import en
 from . import de
 from . import zh
+from . import es
+from . import it
+from . import fr
+from . import pt
+
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 
 set_lang_class(en.English.lang, en.English)
 set_lang_class(de.German.lang, de.German)
+set_lang_class(es.Spanish.lang, es.Spanish)
+set_lang_class(pt.Portuguese.lang, pt.Portuguese)
+set_lang_class(fr.French.lang, fr.French)
+set_lang_class(it.Italian.lang, it.Italian)
 set_lang_class(zh.Chinese.lang, zh.Chinese)
 
 
-def load(name, vocab=None, tokenizer=None, parser=None, tagger=None, entity=None,
-         matcher=None, serializer=None, vectors=None, via=None):
-    package = get_package_by_name(name, via=via)
-    vectors_package = get_package_by_name(vectors, via=via)
-    cls = get_lang_class(name)
-    return cls(
-        package=package,
-        vectors_package=vectors_package,
-        vocab=vocab,
-        tokenizer=tokenizer,
-        tagger=tagger,
-        parser=parser,
-        entity=entity,
-        matcher=matcher,
-        serializer=serializer)
+def load(name, **overrides):
+    target_name, target_version = util.split_data_name(name)
+    data_path = overrides.get('path', util.get_data_path())
+    if target_name == 'en' and 'add_vectors' not in overrides:
+        if 'vectors' in overrides:
+            vec_path = util.match_best_version(overrides['vectors'], None, data_path)
+            if vec_path is None: 
+                raise IOError(
+                    'Could not load data pack %s from %s' % (overrides['vectors'], data_path))
+
+        else:
+            vec_path = util.match_best_version('en_glove_cc_300_1m_vectors', None, data_path)
+        if vec_path is not None:
+            vec_path = vec_path / 'vocab' / 'vec.bin'
+            overrides['add_vectors'] = lambda vocab: vocab.load_vectors_from_bin_loc(vec_path)
+    path = util.match_best_version(target_name, target_version, data_path)
+    cls = get_lang_class(target_name)
+    return cls(path=path, **overrides)

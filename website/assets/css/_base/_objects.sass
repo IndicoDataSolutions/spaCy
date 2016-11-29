@@ -1,0 +1,90 @@
+//- 💫 CSS > BASE > OBJECTS
+
+//- Main container
+
+.o-main
+    padding: $nav-height 0 0 0
+    max-width: 100%
+    min-height: 100vh
+
+    @include breakpoint(min, md)
+        &.o-main--sidebar
+            margin-left: $sidebar-width
+
+        &.o-main--aside
+            margin-right: $aside-width
+            position: relative
+
+            &:after
+                @include position(absolute, top, left, 0, 100%)
+                @include size($aside-width, 100%)
+                content: ""
+                display: block
+                background: $pattern
+                z-index: -1
+                min-height: 100vh
+
+
+//- Content container
+
+.o-content
+    padding: 3rem 7.5rem
+    margin: 0 auto
+    width: $content-width
+    max-width: 100%
+
+    @include breakpoint(max, sm)
+        padding: 3rem
+
+
+//- Footer
+
+.o-footer
+    position: relative
+    padding: 2.5rem 0
+    overflow: auto
+
+
+//- Blocks
+
+.o-block
+    margin-bottom: 3rem
+
+.o-block-small
+    margin-bottom: 2rem
+
+.o-no-block
+    margin-bottom: 0
+
+.o-card
+    background: $color-back
+    border-radius: 2px
+    border: 1px solid $color-subtle
+    padding: 3.5% 2.5%
+
+//- Icons
+
+.o-icon
+    vertical-align: middle
+
+.o-help-icon
+    cursor: help
+    margin: 0 0.5rem 0 0.25rem
+
+
+//- Inline List
+
+.o-inline-list > *
+    display: inline
+
+    &:not(:last-child)
+        margin-right: 3rem
+
+
+//- Logo
+
+.o-logo
+    @include size($logo-width, auto)
+    fill: currentColor
+    vertical-align: middle
+    margin: 0 0.5rem

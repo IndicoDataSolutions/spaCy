@@ -1,12 +1,13 @@
+//- 💫 INCLUDES > SIDEBAR
+
 include _mixins
 
-//-  Sidebar
-//- ============================================================================
+menu.c-sidebar.js-sidebar.u-text
+    if sidebar_content
+        each items, menu in sidebar_content
+            ul.c-sidebar__section.o-block
+                li.u-text-label.u-color-subtle=menu
 
-nav#sidebar.sidebar: .sidebar-body
-    each items, menu in sidebar
-
-        ul.sidebar-menu(data-label=menu)
-            each item in items
-                li.sidebar-menu-item
-                  a(href=item[1] data-section=(item[2]) ? 'section-' + item[2] : null)=item[0]
+                each url, item in items
+                    li(class=(CURRENT == url || (CURRENT == "index" && url == "./")) ? "is-active" : false)
+                        +a(url)(target=url.includes("http") ? "_blank" : false)=item
