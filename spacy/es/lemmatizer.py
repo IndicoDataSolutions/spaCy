@@ -1,7 +1,8 @@
 # coding: utf8
 from __future__ import unicode_literals
 
-LOOK_UP = {
+
+LOOKUP = {
     "aba": "abar",
     "ababa": "abar",
     "ababais": "abar",
