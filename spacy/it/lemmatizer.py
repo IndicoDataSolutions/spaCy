@@ -1,7 +1,7 @@
 # coding: utf8
 from __future__ import unicode_literals
 
-LOOK_UP = {
+LOOKUP = {
     "'ndranghete": "'ndrangheta",
     "'ndrine": "'ndrina",
     "a-storica": "a-storico",
