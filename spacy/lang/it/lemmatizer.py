@@ -8,7 +8,7 @@ LOOKUP = {
     "a-storica": "a-storico",
     "a-storiche": "a-storico",
     "a-storici": "a-storico",
-    "abati": "﻿abate",
+    "abati": "abate",
     "abbacchi": "abbacchiare",
     "abbacchia": "abbacchiare",
     "abbacchiai": "abbacchiare",
