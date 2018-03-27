@@ -286069,7 +286069,6 @@ LOOKUP = {
     "sonnolente": "sonnolento",
     "sonnolenti": "sonnolento",
     "sonnolenze": "sonnolenza",
-    "sono": "sonare",
     "sonora": "sonoro",
     "sonore": "sonoro",
     "sonori": "sonoro",
@@ -333681,6 +333680,7 @@ LOOKUP = {
     "zurliniane": "zurliniano",
     "zurliniani": "zurliniano",
     "àncore": "àncora",
+    "sono": "essere"
     "è": "essere",
     "èlites": "èlite",
     "ère": "èra",
