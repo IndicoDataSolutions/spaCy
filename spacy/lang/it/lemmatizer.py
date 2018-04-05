@@ -333680,7 +333680,7 @@ LOOKUP = {
     "zurliniane": "zurliniano",
     "zurliniani": "zurliniano",
     "àncore": "àncora",
-    "sono": "essere"
+    "sono": "essere",
     "è": "essere",
     "èlites": "èlite",
     "ère": "èra",
