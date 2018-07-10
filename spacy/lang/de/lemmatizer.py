@@ -52419,7 +52419,7 @@ LOOKUP = {
     "Rande": "Rand",
     "Randes": "Rand",
     "Rands": "Rand",
-    "Rang": "ringen",
+    "Rang": "Rang",
     "Range": "Rang",
     "Rangeklotzten": "Rangeklotzte",
     "Rangekriegten": "Rangekriegte",
