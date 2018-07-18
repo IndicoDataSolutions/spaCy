@@ -1,31 +1,32 @@
 from __future__ import unicode_literals, print_function
-from os import path
 import codecs
+import pathlib
 
-try:
-    import ujson as json
-except ImportError:
-    import json
+import ujson as json
 
-from .parts_of_speech import NOUN, VERB, ADJ, PUNCT
-from .util import get_package
+from .symbols import NOUN, VERB, ADJ, PUNCT
 
 
 class Lemmatizer(object):
     @classmethod
-    def load(cls, via):
-        return cls.from_package(get_package(via))
-
-    @classmethod
-    def from_package(cls, pkg):
+    def load(cls, path):
         index = {}
         exc = {}
         for pos in ['adj', 'noun', 'verb']:
-            with pkg.open(('wordnet', 'index.%s' % pos), default=None) as file_:
-                index[pos] = read_index(file_) if file_ is not None else set()
-            with pkg.open(('wordnet', '%s.exc' % pos), default=None) as file_:
-                exc[pos] = read_exc(file_) if file_ is not None else {}
-        rules = pkg.load_json(('vocab', 'lemma_rules.json'), default={})
+            pos_index_path = path / 'wordnet' / 'index.{pos}'.format(pos=pos)
+            if pos_index_path.exists():
+                with pos_index_path.open() as file_:
+                    index[pos] = read_index(file_)
+            else:
+                index[pos] = set()
+            pos_exc_path = path / 'wordnet' / '{pos}.exc'.format(pos=pos)
+            if pos_exc_path.exists():
+                with pos_exc_path.open() as file_:
+                    exc[pos] = read_exc(file_)
+            else:
+                exc[pos] = {}
+        with (path / 'vocab' / 'lemma_rules.json').open('r', encoding='utf8') as file_:
+            rules = json.load(file_)
         return cls(index, exc, rules)
 
     def __init__(self, index, exceptions, rules):
@@ -33,36 +34,53 @@ class Lemmatizer(object):
         self.exc = exceptions
         self.rules = rules
 
-    def __call__(self, string, pos):
-        if pos == NOUN:
-            pos = 'noun'
-        elif pos == VERB:
-            pos = 'verb'
-        elif pos == ADJ:
-            pos = 'adj'
-        elif pos == PUNCT:
-            pos = 'punct'
-        lemmas = lemmatize(string, self.index.get(pos, {}), self.exc.get(pos, {}), self.rules.get(pos, []))
+    def __call__(self, string, univ_pos, **morphology):
+        if univ_pos == NOUN:
+            univ_pos = 'noun'
+        elif univ_pos == VERB:
+            univ_pos = 'verb'
+        elif univ_pos == ADJ:
+            univ_pos = 'adj'
+        elif univ_pos == PUNCT:
+            univ_pos = 'punct'
+        # See Issue #435 for example of where this logic is requied.
+        if self.is_base_form(univ_pos, **morphology):
+            return set([string.lower()])
+        lemmas = lemmatize(string, self.index.get(univ_pos, {}),
+                           self.exc.get(univ_pos, {}),
+                           self.rules.get(univ_pos, []))
         return lemmas
 
-    def noun(self, string):
-        return self(string, 'noun')
+    def is_base_form(self, univ_pos, **morphology):
+        '''Check whether we're dealing with an uninflected paradigm, so we can
+        avoid lemmatization entirely.'''
+        others = [key for key in morphology if key not in ('number', 'pos', 'verbform')]
+        if univ_pos == 'noun' and morphology.get('number') == 'sing' and not others:
+            return True
+        elif univ_pos == 'verb' and morphology.get('verbform') == 'inf' and not others:
+            return True
+        else:
+            return False
 
-    def verb(self, string):
-        return self(string, 'verb')
+    def noun(self, string, **morphology):
+        return self(string, 'noun', **morphology)
 
-    def adj(self, string):
-        return self(string, 'adj')
+    def verb(self, string, **morphology):
+        return self(string, 'verb', **morphology)
 
-    def punct(self, string):
-        return self(string, 'punct')
+    def adj(self, string, **morphology):
+        return self(string, 'adj', **morphology)
+
+    def punct(self, string, **morphology):
+        return self(string, 'punct', **morphology)
 
 
 def lemmatize(string, index, exceptions, rules):
     string = string.lower()
     forms = []
-    if string in index:
-        forms.append(string)
+    # TODO: Is this correct? See discussion in Issue #435.
+    #if string in index:
+    #    forms.append(string)
     forms.extend(exceptions.get(string, []))
     for old, new in rules:
         if string.endswith(old):
