@@ -1,0 +1,33 @@
+//- 💫 CSS > BASE > LAYOUT
+
+//- HTML
+
+html
+    font-size: $type-base
+
+
+//- Body
+
+body
+    animation: fadeIn 0.25s ease
+    background: $color-back
+    color: $color-front
+
+
+//- Paragraphs
+
+p
+    @extend .o-block, .u-text
+
+
+//- Links
+
+main p a, main table a, main > *:not(footer) li a, .c-aside a
+    @extend .u-link
+
+
+//- Selection
+
+::selection
+    background: $color-theme
+    color: $color-back

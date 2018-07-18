@@ -1,10 +1,11 @@
+//- 💫 404 ERROR
+
 include _includes/_mixins
 
-//-  404 Error
-//- ============================================================================
++landing-header
+    h1.c-landing__title.u-heading-0
+        | Ooops, this page#[br]
+        | does not exist!
 
-+lead.text-center Ooops, this page does not exist. Click #[a(href='javascript:history.go(-1)') here] to go back or check out one of the latest posts below.
-
-+divider('bottom')
-
-!=partial('_includes/_latest-posts', { max: 3 } )
+    h2.c-landing__title.u-heading-3.u-padding-small
+        a(href="javascript:history.go(-1)") Click here to go back.

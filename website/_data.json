@@ -1,51 +1,40 @@
 {
     "index": {
-        "landing": true
+        "landing": true,
+        "logos": [
+            {
+                "quora": [ "https://www.quora.com", 150 ],
+                "chartbeat": [ "https://chartbeat.com", 200 ],
+                "duedil": [ "https://www.duedil.com", 150 ],
+                "stitchfix": [ "https://www.stitchfix.com", 190 ]
+            },
+            {
+                "wayblazer": [ "http://wayblazer.com", 200 ],
+                "indico": [ "https://indico.io", 150 ],
+                "chattermill": [ "https://chattermill.io", 175 ],
+                "turi": [ "https://turi.com", 150 ],
+                "kip": [ "http://kipthis.com", 70 ]
+            },
+            {
+                "socrata": [ "https://www.socrata.com", 150 ],
+                "cytora": [ "http://www.cytora.com", 125 ],
+                "signaln": [ "http://signaln.com", 150 ],
+                "wonderflow": [ "http://www.wonderflow.co", 200 ],
+                "synapsify": [ "http://www.gosynapsify.com", 150 ]
+            }
+        ]
     },
 
-    "feed": {
-        "layout": false
-    },
-
-    "robots": {
+    "robots.txt": {
         "layout": false
     },
 
     "404": {
         "title": "404 Error",
-        "asides": false
+        "landing": true
     },
 
-    "team": {
-        "title": "Team"
-    },
-
-    "legal": {
-        "title": "Legal & Imprint",
-        "sidebar": true,
-        "asides": true
-    },
-
-    "styleguide": {
-        "title" : "Styleguide",
-        "standalone" : true,
-        "asides": true,
-
-        "sidebar": {
-            "About": [
-                ["Introduction", "#section-introduction", "introduction"]
-            ],
-            "Design": [
-                ["Colors", "#section-colors", "colors"],
-                ["Logo", "#section-logo", "logo"],
-                ["Typography", "#section-typography", "typography"],
-                ["Grid", "#section-grid", "grid"],
-                ["Elements", "#section-elements", "elements"],
-                ["Components", "#section-components", "components"]
-            ],
-            "Code": [
-                ["Source", "#section-source", "source"]
-            ]
-        }
+    "announcement" : {
+        "title": "Important Announcement"
     }
 }

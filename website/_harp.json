@@ -1,85 +1,67 @@
 {
     "globals": {
-        "title": "spaCy.io",
-        "sitename": "spaCy",
-        "slogan": "Industrial-strength Natural Language Processing",
+        "title": "spaCy",
         "description": "spaCy is a free open-source library featuring state-of-the-art speed and accuracy and a powerful Python API.",
-        "url": "https://spacy.io",
-        "email": "contact@spacy.io",
-        "company": "spaCy GmbH",
-        "team_members": [ "henning", "matt", "wolfgang", "elmar", "ines" ],
 
-        "navigation": { "Docs": "docs", "Demos": "demos", "Team": "team", "Blog": "blog" },
-        "profiles": { "twitter": "spacy_io", "github": "spacy-io", "reddit": "spacynlp", "medium": "spacy" },
-        "google_analytics": "UA-58931649-1",
+        "SITENAME": "spaCy",
+        "SLOGAN": "Industrial-strength Natural Language Processing in Python",
+        "SITE_URL": "https://spacy.io",
+        "EMAIL": "contact@explosion.ai",
 
-        "stylesheets": { "default": "style", "blog": "style_blog" },
-        "scripts" : [ "main", "prism" ],
-        "feed": "feed.xml",
-        "image_sizes" : { "small" : "640", "medium": "1440", "large": "2000" },
-        "default_syntax" : "python",
+        "COMPANY": "Explosion AI",
+        "COMPANY_URL": "https://explosion.ai",
+        "DEMOS_URL": "https://demos.explosion.ai",
 
-        "spacy_version": "0.100.6",
-        "spacy_stars": "1500",
-        "github_settings": { "user": "spacy-io", "repo": "spacy" },
-
-        "apis": {
-            "displacy": "https://displacy.spacy.io/",
-            "sense2vec": "https://sense2vec.spacy.io/api/similarity/reddit/"
+        "SPACY_VERSION": "1.2",
+        "LATEST_NEWS": {
+            "url": "https://explosion.ai/blog/spacy-user-survey",
+            "title": "The results of the spaCy user survey"
         },
 
-        "authors" : {
-            "matt" : {
-                "name" : "Matthew Honnibal",
-                "title": "CTO",
-                "description" : "is co-founder and CTO of spaCy. He studied linguistics as an undergrad, and never thought he'd be a programmer. By 2009 he had a PhD in computer science, and in 2014 he left academia to write spaCy. He's from Sydney and lives in Berlin.",
-                "links": {
-                    "twitter": [ "https://twitter.com/honnibal", "Twitter" ],
-                    "website": [ "https://www.semanticscholar.org/search?q=Matthew%20Honnibal", "Semantic Scholar" ]
-                }
-            },
+        "SOCIAL": {
+            "twitter": "spacy_io",
+            "github": "explosion",
+            "reddit": "spacynlp",
+            "codepen": "explosion"
+        },
 
-            "henning": {
-                "name": "Henning Peters",
-                "title": "CEO",
-                "description": "is co-founder and CEO of spaCy. He holds a MSc in computer science and has been co-founder and CTO of Skoobe and Absolventa. His passions are uncommon languages and backcountry skiing.",
-                "links": {
-                    "twitter": [ "https://twitter.com/henningpeters", "Twitter"],
-                    "linkedin": [ "https://de.linkedin.com/in/hepeters", "LinkedIn"],
-                    "github": [ "https://github.com/henningpeters", "GitHub"]
-                }
-            },
+        "NAVIGATION": {
+            "Home": "/",
+            "Docs": "/docs",
+            "Demos": "/docs/usage/showcase",
+            "Blog": "https://explosion.ai/blog"
+        },
 
-            "ines": {
-                "name": "Ines Montani",
-                "title": "Front-End",
-                "description": "As Head of Front-End, Ines is in charge of showing people what spaCy can do. She develops, designs and implements our interactive demos and the spacy.io website. Ines has a degree in media, linguistics and communications, and over ten years experience in web development.",
-                "links": {
-                    "twitter": [ "https://twitter.com/_inesmontani", "Twitter" ],
-                    "codepen": [ "https://codepen.io/inesmontani", "Codepen"],
-                    "github": [ "https://github.com/inesmontani", "GitHub"],
-                    "website": [ "http://ines.io", "Blog" ]
-                }
+        "FOOTER": {
+            "spaCy": {
+                "Usage": "/docs/usage",
+                "API Reference": "/docs/api",
+                "Tutorials": "/docs/usage/tutorials",
+                "Showcase": "/docs/usage/showcase"
             },
-
-            "wolfgang": {
-                "name": "Wolfgang Seeker",
-                "title": "NLP Engineer",
-                "description": "is a computational linguist from Germany. He is fascinated with the complexity and variety of human language, and spent his PhD looking for ways to make NLP work well with any kind of language in the world. He joined spaCy to build effective and truly multilingual NLP software.",
-                "links": {
-                    "website": [ "https://www.semanticscholar.org/search?q=Wolfgang%20Seeker", "Semantic Scholar" ]
-                }
+            "Support": {
+                "Issue Tracker": "https://github.com/explosion/spaCy/issues",
+                "StackOverflow": "http://stackoverflow.com/questions/tagged/spacy",
+                "Reddit usergroup": "https://www.reddit.com/r/spacynlp/",
+                "Gitter chat": "https://gitter.im/explosion/spaCy"
             },
-
-            "elmar": {
-                "name": "Elmar Haußmann",
-                "title": "NLP Engineer",
-                "description": "is an NLP engineer at spaCy, passionate about deep learning. He has a background in both, academic research, with a PhD in computer science, and industry, as a former consultant and software engineer at IBM. Originally from Stuttgart, the avid snowboarder and mountain biker doesn't only ride powder and trails but also covers distances via plane between the spaCy office in Berlin and his new home in Beijing.",
-                "links": {
-                    "github": [ "https://github.com/elmar-haussmann", "GitHub"],
-                    "twitter": [ "https://twitter.com/elhaussmann", "Twitter" ]
-                }
+            "Connect": {
+                "Twitter": "https://twitter.com/spacy_io",
+                "GitHub": "https://github.com/explosion/spaCy",
+                "Blog": "https://explosion.ai/blog",
+                "Contact": "mailto:contact@explosion.ai"
             }
+        },
+
+        "V_CSS": "1.9",
+        "V_JS": "1.0",
+        "DEFAULT_SYNTAX" : "python",
+        "ANALYTICS": "UA-58931649-1",
+        "MAILCHIMP": {
+            "user": "spacy.us12",
+            "id": "83b0498b1e7fa3c91ce68c3f1",
+            "list": "89ad33e698"
         }
+
     }
 }
