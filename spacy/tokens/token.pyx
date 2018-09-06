@@ -168,6 +168,10 @@ cdef class Token:
         return (numpy.dot(self.vector, other.vector) /
                 (self_norm * other_norm))
 
+    property ent_score:
+        def __get__(self):
+            return self.c.ent_score
+
     property lex_id:
         """RETURNS (int): Sequential ID of the token's lexical type."""
         def __get__(self):

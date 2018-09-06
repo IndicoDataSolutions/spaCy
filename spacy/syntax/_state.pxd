@@ -385,10 +385,11 @@ cdef cppclass StateC:
         this._ents[this._e_i-1].end = this.B(0)+1
         this._sent[this.B(0)].ent_iob = 1
 
-    void set_ent_tag(int i, int ent_iob, attr_t ent_type) nogil:
+    void set_ent_tag(int i, int ent_iob, attr_t ent_type, float ent_score) nogil:
         if 0 <= i < this.length:
             this._sent[i].ent_iob = ent_iob
             this._sent[i].ent_type = ent_type
+            this._sent[i].ent_score = ent_score
 
     void set_break(int i) nogil:
         if 0 <= i < this.length:

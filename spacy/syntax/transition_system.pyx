@@ -78,7 +78,7 @@ cdef class TransitionSystem:
                 if is_valid[i] and costs[i] <= 0:
                     action = self.c[i]
                     history.append(i)
-                    action.do(state.c, action.label)
+                    action.do(state.c, action.label, 0)
                     break
             else:
                 raise ValueError(Errors.E024)
