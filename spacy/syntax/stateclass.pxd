@@ -20,7 +20,7 @@ cdef class StateClass:
         cdef StateClass self = StateClass()
         self.c = new StateC(sent, length)
         return self
-    
+
     @staticmethod
     cdef inline StateClass borrow(StateC* ptr):
         cdef StateClass self = StateClass()
@@ -67,7 +67,7 @@ cdef class StateClass:
 
     cdef inline int H(self, int i) nogil:
         return self.c.H(i)
-    
+
     cdef inline int E(self, int i) nogil:
         return self.c.E(i)
 
@@ -128,8 +128,8 @@ cdef class StateClass:
     cdef inline void close_ent(self) nogil:
         self.c.close_ent()
 
-    cdef inline void set_ent_tag(self, int i, int ent_iob, attr_t ent_type) nogil:
-        self.c.set_ent_tag(i, ent_iob, ent_type)
+    cdef inline void set_ent_tag(self, int i, int ent_iob, attr_t ent_type, float ent_score) nogil:
+        self.c.set_ent_tag(i, ent_iob, ent_type, ent_score)
 
     cdef inline void set_break(self, int i) nogil:
         self.c.set_break(i)

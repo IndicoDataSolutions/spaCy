@@ -20,7 +20,7 @@ cdef int _transition_state(void* _dest, void* _src, class_t clas, void* _moves) 
     src = <StateC*>_src
     moves = <const Transition*>_moves
     dest.clone(src)
-    moves[clas].do(dest, moves[clas].label)
+    moves[clas].do(dest, moves[clas].label, 0)
     dest.push_hist(clas)
 
 

@@ -46,6 +46,42 @@ def get_templates(*args, **kwargs):
     return []
 
 
+cdef void minmax(float *observation, int size, int low, int high, int *is_valid, float *result) nogil:
+    """
+    Standard minmax function to scale input into min -> max range with additional is_valid array.
+    Not valid values are 0'd out and not considered for minmax.
+    We choose to use 8 to get nicer first token scores.
+    """
+    cdef float min = 0
+    cdef float max = 0
+    for i in range(0, size):
+        if not is_valid[i]:
+            continue
+        if observation[i] < min:
+            min = observation[i]
+        if observation[i] > max:
+            max = observation[i]
+
+    for i in range(0, size):
+        if not is_valid[i]:
+            result[i] = 0
+            continue
+        result[i] = (observation[i] - min)/(max - min) * (high - low) + low
+
+
+cdef void softmax(float *observation, int size, float *softmax_destination) nogil:
+    """
+    Standard softmax. Sum of result should be 1 and all values should be 0->1.
+    """
+    cdef int i
+    cdef float exp_sum = 0.0
+    for i in range(0, size):
+      softmax_destination[i] = exp(observation[i])
+      exp_sum += softmax_destination[i]
+    for i in range(0, size):
+        softmax_destination[i] /= exp_sum
+
+
 DEBUG = False
 
 
@@ -440,6 +476,9 @@ cdef class Parser:
         is_valid = <int*>calloc(nr_class, sizeof(int))
         vectors = <float*>calloc(nr_hidden * nr_piece, sizeof(float))
         scores = <float*>calloc(nr_class, sizeof(float))
+        softmax_dst = <float*>calloc(nr_class, sizeof(float))
+        shiftpos_dst = <float*>calloc(nr_class, sizeof(float))
+
         if not (token_ids and is_valid and vectors and scores):
             with gil:
                 PyErr_SetFromErrno(MemoryError)
@@ -449,6 +488,9 @@ cdef class Parser:
             state.set_context_tokens(token_ids, nr_feat)
             memset(vectors, 0, nr_hidden * nr_piece * sizeof(float))
             memset(scores, 0, nr_class * sizeof(float))
+            memset(shiftpos_dst, 0, nr_class * sizeof(float))
+            memset(softmax_dst, 0, nr_class * sizeof(float))
+
             sum_state_features(vectors,
                 feat_weights, token_ids, 1, nr_feat, nr_hidden * nr_piece)
             for i in range(nr_hidden * nr_piece):
@@ -469,9 +511,11 @@ cdef class Parser:
             for i in range(nr_class):
                 scores[i] += hb[i]
             self.moves.set_valid(is_valid, state)
+            minmax(scores, nr_class, 0, 8, is_valid, shiftpos_dst)
+            softmax(shiftpos_dst, nr_class, softmax_dst)
             guess = arg_max_if_valid(scores, is_valid, nr_class)
             action = self.moves.c[guess]
-            action.do(state, action.label)
+            action.do(state, action.label, softmax_dst[guess])
             state.push_hist(guess)
         free(token_ids)
         free(is_valid)
@@ -688,7 +732,7 @@ cdef class Parser:
                 n_moves = 0
                 while state.B(0) < start and not state.is_final():
                     action = self.moves.c[oracle_actions.pop(0)]
-                    action.do(state.c, action.label)
+                    action.do(state.c, action.label, 0)
                     state.c.push_hist(action.clas)
                     n_moves += 1
                 has_gold = self.moves.has_gold(gold, start=start,
@@ -753,7 +797,7 @@ cdef class Parser:
             self.moves.set_valid(is_valid, state.c)
             guess = arg_max_if_valid(c_scores, is_valid, scores.shape[1])
             action = self.moves.c[guess]
-            action.do(state.c, action.label)
+            action.do(state.c, action.label, c_scores[guess])
             c_scores += scores.shape[1]
             state.c.push_hist(guess)
 
@@ -1005,7 +1049,7 @@ cdef int _transition_state(void* _dest, void* _src, class_t clas, void* _moves) 
     src = <StateC*>_src
     moves = <const Transition*>_moves
     dest.clone(src)
-    moves[clas].do(dest, moves[clas].label)
+    moves[clas].do(dest, moves[clas].label, 0)
     dest.push_hist(clas)
 
 

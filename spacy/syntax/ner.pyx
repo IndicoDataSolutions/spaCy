@@ -251,7 +251,7 @@ cdef class Missing:
         return False
 
     @staticmethod
-    cdef int transition(StateC* s, attr_t label) nogil:
+    cdef int transition(StateC* s, attr_t label, float score) nogil:
         pass
 
     @staticmethod
@@ -285,9 +285,9 @@ cdef class Begin:
             return label != 0 and not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, attr_t label) nogil:
+    cdef int transition(StateC* st, attr_t label, float score) nogil:
         st.open_ent(label)
-        st.set_ent_tag(st.B(0), 3, label)
+        st.set_ent_tag(st.B(0), 3, label, score)
         st.push()
         st.pop()
 
@@ -330,8 +330,8 @@ cdef class In:
         return st.entity_is_open() and label != 0 and st.E_(0).ent_type == label
 
     @staticmethod
-    cdef int transition(StateC* st, attr_t label) nogil:
-        st.set_ent_tag(st.B(0), 1, label)
+    cdef int transition(StateC* st, attr_t label, float score) nogil:
+        st.set_ent_tag(st.B(0), 1, label, score)
         st.push()
         st.pop()
 
@@ -377,9 +377,9 @@ cdef class Last:
         return st.entity_is_open() and label != 0 and st.E_(0).ent_type == label
 
     @staticmethod
-    cdef int transition(StateC* st, attr_t label) nogil:
+    cdef int transition(StateC* st, attr_t label, float score) nogil:
         st.close_ent()
-        st.set_ent_tag(st.B(0), 1, label)
+        st.set_ent_tag(st.B(0), 1, label, score)
         st.push()
         st.pop()
 
@@ -429,10 +429,10 @@ cdef class Unit:
         return label != 0 and not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, attr_t label) nogil:
+    cdef int transition(StateC* st, attr_t label, float score) nogil:
         st.open_ent(label)
         st.close_ent()
-        st.set_ent_tag(st.B(0), 3, label)
+        st.set_ent_tag(st.B(0), 3, label, score)
         st.push()
         st.pop()
 
@@ -468,8 +468,8 @@ cdef class Out:
         return not st.entity_is_open()
 
     @staticmethod
-    cdef int transition(StateC* st, attr_t label) nogil:
-        st.set_ent_tag(st.B(0), 2, 0)
+    cdef int transition(StateC* st, attr_t label, float score) nogil:
+        st.set_ent_tag(st.B(0), 2, 0, score)
         st.push()
         st.pop()
 
